@@ -1,0 +1,91 @@
+asyncapi: 2.0.0
+info:
+  title: Keycloak Adapter Service
+  version: v1.1.6
+  description: |
+    Microservice which is responsible for new prospects and is a layer between keycloak and event-store
+
+defaultContentType: application/json
+
+channels:
+  keycloak_adapter-prospects-stream:
+    description: The stream for all relevant events regarding Users.
+    subscribe:
+      summary: Receive information about Prospects
+      message:
+        oneOf:
+          - $ref: '#/components/messages/ProspectProfileCreated'
+
+components:
+  messages:
+    ProspectProfileCreated:
+      name: User.ProspectProfileCreated
+      title: Prospect Profile Created
+      summary: Prospect Profile created
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/UserProfilePayload"
+
+  schemas:
+    UserProfilePayload:
+      type: object
+      required:
+        - id
+        - email
+        - salutation
+        - first_name
+        - last_name
+        - phone
+        - occurred_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        salutation:
+          type: integer
+          x-nullable: true
+          enum:
+            - 0
+            - 1
+            - 2
+          description: |
+            prospect available salutations:
+             * 0 - male
+             * 1 - female
+             * 2 - other
+        first_name:
+          type: string
+          x-nullable: true
+        last_name:
+          type: string
+        phone:
+          type: string
+          x-nullable: true
+        terms_conditions:
+          type: boolean
+        source:
+          type: string
+          default: project_inquiry
+          enum:
+            - project_inquiry
+            - marketplace
+        visitor_id:
+          type: [string, 'null']
+          format: uuid
+        occurred_at:
+          type: string
+          format: Y-m-d\TH:i:s.u
+      example:
+        id: 8ea116ef-7b69-43ff-ada6-43d2578b6f6c
+        email: john.doe@example.com
+        salutation: null
+        first_name: John
+        last_name: Doe
+        phone: 123-456-789
+        terms_conditions: true
+        source: marketplace
+        visitor_id: 78f1b1af-f3a1-420d-94c0-49cd8a874626
+        occurred_at: 2020-02-26T19:28:25.000000

@@ -1,0 +1,10 @@
+include:
+  - project: 'allmyhomes/devops/shared-pipelines/laravel'
+    ref: v1.7.0
+    file: 'laravel.gitlab-ci.yml'
+
+variables:
+  BASE_DATABASE: "postgres"
+  TEST_CODECEPTION: "false"
+  TEST_CODESNIFFER: "false"
+  TEST_PHP_CS_FIXER: "true"

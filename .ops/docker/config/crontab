@@ -1,0 +1,1 @@
+* * * * * artisan schedule:run >> /var/www/html/src/Infrastructure/Boilerplate/Laravel/storage/logs/laravel.scheduler.log 2>&1

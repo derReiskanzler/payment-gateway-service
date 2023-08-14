@@ -1,0 +1,54 @@
+version: '2'
+services:
+    payment-gateway-service-app:
+        build:
+            context: .
+            dockerfile: .ops/docker/Dockerfile
+            target: base
+            args:
+                TARGET: base-testing
+        container_name: payment-gateway-service-app
+        restart: always
+        ports:
+            - 80:80
+        volumes:
+            - .:/var/www/html
+            - ~/.ssh:/root/.ssh
+            - ~/.gitconfig:/root/.gitconfig
+        environment:
+            - DB_HOST=be-payment-gateway-service-db
+            - DB_PORT=5432
+            - DB_DATABASE=payment-gateway-service
+            - DB_USERNAME=root
+            - DB_PASSWORD=password
+            - DB_EVENT_STORE_HOST=event-store
+            - DB_EVENT_STORE_PORT=5432
+            - DB_EVENT_STORE_DATABASE=event-store
+            - DB_EVENT_STORE_USERNAME=root
+            - DB_EVENT_STORE_PASSWORD=password
+
+    payment-gateway-service-db:
+        image: postgres:11-alpine
+        container_name: be-payment-gateway-service-db
+        restart: always
+        ports:
+            - 5432:5432
+        volumes:
+            - .ops/data/payment-gateway-service-db/postgresql:/var/lib/postgresql/data
+        environment:
+            - POSTGRES_USER=root
+            - POSTGRES_PASSWORD=password
+            - POSTGRES_DB=payment-gateway-service
+
+    event-store-db:
+        image: postgres:11-alpine
+        container_name: event-store
+        restart: always
+        ports:
+            - 5433:5432
+        volumes:
+            - .ops/data/event-store-db/postgresql:/var/lib/postgresql/data
+        environment:
+            - POSTGRES_USER=root
+            - POSTGRES_PASSWORD=password
+            - POSTGRES_DB=event-store

@@ -1,0 +1,796 @@
+swagger: "2.0"
+info:
+  title: payment-gateway-service
+  version: v1.0.0
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /healthz:
+    get:
+      tags:
+        - boilerplate
+      operationId: getHealthz
+      responses:
+        "200":
+          description: ...
+          schema:
+            $ref: '#/definitions/HEALTHZ200'
+
+  /v1/complete-deposit-payment-session:
+    post:
+      tags:
+        - deposit-payment-session
+      operationId: completeDepositPaymentSession
+      parameters:
+        - name: body
+          in: body
+          required: true
+          description: 'Request Body'
+          schema:
+            $ref: '#/definitions/DepositPaymentSession'
+      responses:
+        200:
+          description: Deposit Payment Session was successfully completed
+          schema:
+            $ref: '#/definitions/HTTP200'
+
+definitions:
+
+  HTTP200:
+    additionalProperties: false
+    type: string
+    example: OK
+
+  HEALTHZ200:
+    additionalProperties: false
+    type: array
+    items:
+      type: string
+      example: OK
+
+  Event:
+    required:
+      - stream
+      - event_name
+      - payload
+    additionalProperties: false
+    type: object
+    properties:
+      stream:
+        type: string
+        example: "project_information-sellable_projects-projection"
+      event_name:
+        type: string
+        example: "ReservationSetting.ProjectSettingsCreated"
+      payload:
+        type: object
+        additionalProperties: true
+        example:
+          id: 123
+          name: "TestProjectName"
+      metadata:
+        type: object
+        additionalProperties: true
+      event_id:
+        type: string
+        format: uuid
+        example: "ab7b5598-c1a4-451c-a88e-70946767cd2a"
+
+  HTTP400:
+    type: object
+    additionalProperties: false
+    required:
+      - errors
+    properties:
+      errors:
+        type: array
+        minItems: 1
+        items:
+          type: object
+          additionalProperties: false
+          required:
+            - id
+            - message
+          properties:
+            id:
+              type: integer
+              example: 400
+            domain:
+              type: string
+              example: 'Content'
+            message:
+              example: 'The Request cannot be processed by the server.'
+              type: string
+
+  HTTP401:
+    type: object
+    additionalProperties: false
+    required:
+      - errors
+    properties:
+      errors:
+        type: array
+        minItems: 1
+        items:
+          type: object
+          additionalProperties: false
+          required:
+            - code
+            - message
+          properties:
+            code:
+              type: integer
+              example: 401
+            message:
+              example: 'Bearer Token was not found'
+              type: string
+
+  HTTP403:
+    type: object
+    additionalProperties: false
+    required:
+      - errors
+    properties:
+      errors:
+        type: array
+        minItems: 1
+        items:
+          type: object
+          required:
+            - code
+            - message
+          additionalProperties: false
+          properties:
+            code:
+              type: integer
+              example: 403
+            message:
+              example: 'You do not have permissions to access this page'
+              type: string
+
+  HTTP404:
+    type: object
+    additionalProperties: false
+    required:
+      - errors
+    properties:
+      errors:
+        type: array
+        minItems: 1
+        items:
+          type: object
+          required:
+            - code
+            - message
+          additionalProperties: false
+          properties:
+            code:
+              type: integer
+              example: 404
+            message:
+              example: 'Not found'
+              type: string
+
+  HTTP500:
+    type: object
+    additionalProperties: false
+    required:
+      - errors
+    properties:
+      errors:
+        type: array
+        minItems: 1
+        items:
+          type: object
+          additionalProperties: false
+          required:
+            - code
+            - message
+          properties:
+            code:
+              type: integer
+              example: 500
+            domain:
+              type: string
+              example: 'Content'
+            message:
+              example: 'Internal Server Error.'
+              type: string
+
+  DepositPaymentSession:
+    title: DepositPaymentSession
+    type: object
+    additionalProperties: false
+    required:
+      - id
+      - api_version
+      - created
+      - data
+      - livemode
+      - pending_webhooks
+      - request
+      - type
+    properties:
+      id:
+        type: string
+        example: 'evt_3LEGluLHVthCw2sm0tt49NQ6'
+      object:
+        type: string
+        example: 'event'
+      api_version:
+        type: string
+        format: date
+        example: '2020-08-27'
+      created:
+        type: integer
+        example: 1656093541
+      data:
+        type: object
+        properties:
+          object:
+            type: object
+            properties:
+              id:
+                type: string
+                example: 'pi_3LEGluLHVthCw2sm0LefqmrQ'
+              object:
+                type: string
+                example: 'payment_intent'
+              amount:
+                type: integer
+                example: 300000
+              amount_capturable:
+                type: integer
+                example: 0
+              amount_details:
+                type: object
+                properties:
+                  tip:
+                    type: object
+                    format: nullable
+                    example: ''
+                    x-nullable: true
+              amount_received:
+                type: integer
+                example: 300000
+              application:
+                type: string
+                example: ''
+              application_fee_amount:
+                type: string
+                example: ''
+              automatic_payment_methods:
+                type: string
+                example: ''
+              canceled_at:
+                type: string
+                example: '2020-08-27'
+              cancellation_reason:
+                type: string
+                example: ''
+              capture_method:
+                type: string
+                example: 'automatic'
+              charges:
+                type: object
+                properties:
+                  object:
+                    type: string
+                    example: 'list'
+                  data:
+                    type: array
+                    items:
+                      additionalProperties: false
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: 'ch_3LEGluLHVthCw2sm0eIlb438'
+                        object:
+                          type: string
+                          example: 'charge'
+                        amount:
+                          type: integer
+                          example: 300000
+                        amount_captured:
+                          type: integer
+                          example: 300000
+                        amount_refunded:
+                          type: integer
+                          example: 0
+                        application:
+                          type: string
+                          format: nullable
+                          example: ''
+                          x-nullable: true
+                        application_fee:
+                          type: string
+                          format: nullable
+                          example: ''
+                          x-nullable: true
+                        application_fee_amount:
+                          type: string
+                          format: nullable
+                          example: ''
+                          x-nullable: true
+                        balance_transaction:
+                          type: string
+                          example: 'txn_3LEGluLHVthCw2sm0rZsUGzY'
+                        billing_details:
+                          type: object
+                          properties:
+                            address:
+                              type: object
+                              properties:
+                                city:
+                                  type: string
+                                  format: nullable
+                                  example: ''
+                                  x-nullable: true
+                                country:
+                                  type: string
+                                  example: 'DE'
+                                line1:
+                                  type: string
+                                  format: nullable
+                                  example: ''
+                                  x-nullable: true
+                                line2:
+                                  type: string
+                                  format: nullable
+                                  example: ''
+                                  x-nullable: true
+                                postal_code:
+                                  type: string
+                                  format: nullable
+                                  example: ''
+                                  x-nullable: true
+                                state:
+                                  type: string
+                                  format: nullable
+                                  example: ''
+                                  x-nullable: true
+                            email:
+                              type: string
+                              example: 'max.mustermann@gmail.com'
+                            name:
+                              type: string
+                              example: 'Max Mustermann'
+                            phone:
+                              type: string
+                              format: nullable
+                              example: ''
+                              x-nullable: true
+                        calculated_statement_descriptor:
+                          type: string
+                          example: 'Stripe'
+                        captured:
+                          type: boolean
+                          example: false
+                        created:
+                          type: integer
+                          example: 1656093540
+                        currency:
+                          type: string
+                          example: 'eur'
+                        customer:
+                          type: string
+                          example: 'cus_Lw94ibl6Y5k4uz'
+                        description:
+                          type: string
+                          format: nullable
+                          example: ''
+                          x-nullable: true
+                        destination:
+                          type: string
+                          format: nullable
+                          example: ''
+                          x-nullable: true
+                        dispute:
+                          type: string
+                          format: nullable
+                          example: ''
+                          x-nullable: true
+                        disputed:
+                          type: boolean
+                          example: false
+                        failure_balance_transaction:
+                          type: string
+                          format: nullable
+                          example: ''
+                          x-nullable: true
+                        failure_code:
+                          type: string
+                          format: nullable
+                          example: ''
+                          x-nullable: true
+                        failure_message:
+                          type: string
+                          format: nullable
+                          example: ''
+                          x-nullable: true
+                        fraud_details:
+                          type: object
+                          format: nullable
+                          example: ''
+                          x-nullable: true
+                        invoice:
+                          type: string
+                          format: nullable
+                          example: ''
+                          x-nullable: true
+                        livemode:
+                          type: boolean
+                          example: false
+                        metadata:
+                          type: object
+                          format: nullable
+                          example: ''
+                          x-nullable: true
+                        on_behalf_of:
+                          type: string
+                          format: nullable
+                          example: ''
+                          x-nullable: true
+                        order:
+                          type: string
+                          format: nullable
+                          example: ''
+                          x-nullable: true
+                        outcome:
+                          type: object
+                          properties:
+                            network_status:
+                              type: string
+                              example: 'approved_by_network'
+                            reason:
+                              type: string
+                              format: nullable
+                              example: ''
+                              x-nullable: true
+                            risk_level:
+                              type: string
+                              example: 'normal'
+                            risk_score:
+                              type: integer
+                              example: 63
+                            seller_message:
+                              type: string
+                              example: 'Payment complete.'
+                            type:
+                              type: string
+                              example: 'authorized'
+                        paid:
+                          type: boolean
+                          example: false
+                        payment_intent:
+                          type: string
+                          example: 'pi_3LEGluLHVthCw2sm0LefqmrQ'
+                        payment_method:
+                          type: string
+                          example: 'pm_1LEGmULHVthCw2smqOaYlRKn'
+                        payment_method_details:
+                          type: object
+                          properties:
+                            card:
+                              type: object
+                              properties:
+                                brand:
+                                  type: string
+                                  example: 'visa'
+                                checks:
+                                  type: object
+                                  properties:
+                                    address_line1_check:
+                                      type: string
+                                      format: nullable
+                                      example: ''
+                                      x-nullable: true
+                                    address_postal_code_check:
+                                      type: string
+                                      format: nullable
+                                      example: ''
+                                      x-nullable: true
+                                    cvc_check:
+                                      type: string
+                                      example: 'pass'
+                                country:
+                                  type: string
+                                  example: 'US'
+                                exp_month:
+                                  type: integer
+                                  example: 4
+                                exp_year:
+                                  type: integer
+                                  example: 2024
+                                fingerprint:
+                                  type: string
+                                  example: 'vCJvN4rci2vmjk2A'
+                                funding:
+                                  type: string
+                                  example: 'credit'
+                                installments:
+                                  type: string
+                                  format: nullable
+                                  example: ''
+                                  x-nullable: true
+                                last4:
+                                  type: string
+                                  example: '4242'
+                                mandate:
+                                  type: string
+                                  format: nullable
+                                  example: ''
+                                  x-nullable: true
+                                network:
+                                  type: string
+                                  example: 'visa'
+                                three_d_secure:
+                                  type: string
+                                  format: nullable
+                                  example: ''
+                                  x-nullable: true
+                                wallet:
+                                  type: string
+                                  format: nullable
+                                  example: ''
+                                  x-nullable: true
+                            type:
+                              type: string
+                              example: 'card'
+                        receipt_email:
+                          type: string
+                          format: nullable
+                          example: ''
+                          x-nullable: true
+                        receipt_integer:
+                          type: string
+                          format: nullable
+                          example: ''
+                          x-nullable: true
+                        receipt_url:
+                          type: string
+                          example: 'https://pay.stripe.com/receipts/acct_1L153aLHVthCw2sm/ch_3LEGluLHVthCw2sm0eIlb438/rcpt_Lw94LtoctBACBkBZcHEkCvxF1eKK0Cb'
+                        refunded:
+                          type: boolean
+                          example: false
+                        refunds:
+                          type: object
+                          properties:
+                            object:
+                              type: string
+                              example: 'list'
+                            data:
+                              type: array
+                              items:
+                                type: string
+                                example: ''
+                            has_more:
+                              type: boolean
+                              example: false
+                            total_count:
+                              type: integer
+                              example: 0
+                            url:
+                              type: string
+                              example: '/v1/charges/ch_3LEGluLHVthCw2sm0eIlb438/refunds'
+                        review:
+                          type: string
+                          format: nullable
+                          example: ''
+                          x-nullable: true
+                        shipping:
+                          type: string
+                          format: nullable
+                          example: ''
+                          x-nullable: true
+                        source:
+                          type: string
+                          format: nullable
+                          example: ''
+                          x-nullable: true
+                        source_transfer:
+                          type: string
+                          format: nullable
+                          example: ''
+                          x-nullable: true
+                        statement_descriptor:
+                          type: string
+                          format: nullable
+                          example: ''
+                          x-nullable: true
+                        statement_descriptor_suffix:
+                          type: string
+                          format: nullable
+                          example: ''
+                          x-nullable: true
+                        status:
+                          type: string
+                          example: 'succeeded'
+                        transfer_data:
+                          type: string
+                          format: nullable
+                          example: ''
+                          x-nullable: true
+                        transfer_group:
+                          type: string
+                          format: nullable
+                          example: ''
+                          x-nullable: true
+                  has_more:
+                    type: boolean
+                    example: false
+                  total_count:
+                    type: integer
+                    example: 1
+                  url:
+                    type: string
+                    example: '/v1/charges?payment_intent=pi_3LEGluLHVthCw2sm0LefqmrQ'
+              client_secret:
+                type: string
+                example: 'pi_3LEGluLHVthCw2sm0LefqmrQ_secret_zW43gKOs5IAC5ruClms99dcmU'
+              confirmation_method:
+                type: string
+                example: 'automatic'
+              created:
+                type: integer
+                example: 1656093502
+              currency:
+                type: string
+                example: 'eur'
+              customer:
+                type: string
+                example: 'cus_Lw94ibl6Y5k4uz'
+              description:
+                type: string
+                format: nullable
+                example: ''
+                x-nullable: true
+              invoice:
+                type: string
+                format: nullable
+                example: ''
+                x-nullable: true
+              last_payment_error:
+                type: string
+                format: nullable
+                example: ''
+                x-nullable: true
+              livemode:
+                type: boolean
+                example: false
+              metadata:
+                type: object
+                required:
+                  - reservation_id
+                  - project_id
+                  - prospect_id
+                  - agent_id
+                properties:
+                  reservation_id:
+                    type: string
+                    example: '1234-1234-12345'
+                  project_id:
+                    type: integer
+                    example: 80262
+                  prospect_id:
+                    type: string
+                    format: uuid
+                    example: 'ca50819f-e5a4-40d3-a425-daba3e095407'
+                  agent_id:
+                    type: string
+                    format: uuid
+                    example: 'da7c58f5-4c74-4722-8b94-7fcf8d857055'
+              next_action:
+                type: string
+                format: nullable
+                example: ''
+                x-nullable: true
+              on_behalf_of:
+                type: string
+                format: nullable
+                example: ''
+                x-nullable: true
+              payment_method:
+                type: string
+                example: 'pm_1LEGmULHVthCw2smqOaYlRKn'
+              payment_method_options:
+                type: object
+                properties:
+                  card:
+                    type: object
+                    properties:
+                      installments:
+                        type: string
+                        format: nullable
+                        example: ''
+                        x-nullable: true
+                      mandate_options:
+                        type: string
+                        format: nullable
+                        example: ''
+                        x-nullable: true
+                      network:
+                        type: string
+                        format: nullable
+                        example: ''
+                        x-nullable: true
+                      request_three_d_secure:
+                        type: string
+                        example: 'automatic'
+              payment_method_types:
+                type: array
+                items:
+                  type: string
+                  example: 'card'
+              processing:
+                type: string
+                format: nullable
+                example: ''
+                x-nullable: true
+              receipt_email:
+                type: string
+                format: nullable
+                example: ''
+                x-nullable: true
+              review:
+                type: string
+                format: nullable
+                example: ''
+                x-nullable: true
+              setup_future_usage:
+                type: string
+                format: nullable
+                example: ''
+                x-nullable: true
+              shipping:
+                type: string
+                format: nullable
+                example: ''
+                x-nullable: true
+              source:
+                type: string
+                format: nullable
+                example: ''
+                x-nullable: true
+              statement_descriptor:
+                type: string
+                format: nullable
+                example: ''
+                x-nullable: true
+              statement_descriptor_suffix:
+                type: string
+                format: nullable
+                example: ''
+                x-nullable: true
+              status:
+                type: string
+                example: 'succeeded'
+              transfer_data:
+                type: string
+                example: ''
+                x-nullable: true
+              transfer_group:
+                type: string
+                example: ''
+                x-nullable: true
+      livemode:
+        type: boolean
+        example: false
+      pending_webhooks:
+        type: integer
+        example: 1
+      request:
+        type: object
+        properties:
+          id:
+            type: string
+            example: 'req_2SH14htFJmLony'
+          idempotency_key:
+            type: string
+            example: 'c751d423-c239-4aa1-b124-470ebf116ad6'
+      type:
+        type: string
+        example: 'checkout.session.completed'

@@ -1,0 +1,200 @@
+{
+    "name": "allmyhomes/laravel-payment-gateway-service-service",
+    "description": "Payment-gateway-service to create a Laravel REST API service",
+    "keywords": [
+        "laravel",
+        "api",
+        "payment-gateway-service",
+        "jwt",
+        "auth",
+        "rest",
+        "microservices"
+    ],
+    "license": "proprietary",
+    "type": "project",
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://composer.envs.io"
+        }
+    ],
+    "require": {
+        "php": ">=8.0",
+        "ext-PDO": "*",
+        "ext-openssl": "*",
+        "allmyhomes/laravel-ddd-abstractions": "^2.5",
+        "allmyhomes/laravel-keycloak-guard-package": "^v1.0",
+        "allmyhomes/laravel-token-verification": "^4.3",
+        "allmyhomes/laravel-uuid": "^2.0",
+        "allmyhomes/mail-renderer-client": "^1.1",
+        "allmyhomes/php-event-projections": "^1.5",
+        "barryvdh/laravel-cors": "0.11.*",
+        "doctrine/dbal": "^2.8",
+        "event-engine/php-data": "^2.0",
+        "event-engine/php-persistence": "^0.9",
+        "event-engine/php-postgres-document-store": "^0.14",
+        "event-engine/prooph-v7-event-store": "^0.10",
+        "fideloper/proxy": "^4.0",
+        "firebase/php-jwt": "^5.5",
+        "guzzlehttp/guzzle": "^6.3",
+        "kamermans/guzzle-oauth2-subscriber": "~1.0",
+        "laravel/framework": "^6.18.31",
+        "laravel/helpers": "^1.2",
+        "laravel/tinker": "^2.0",
+        "league/fractal": "^0.18",
+        "monolog/monolog": "^1.0",
+        "nesbot/carbon": "^2.32.0",
+        "prooph/pdo-event-store": "^1.14",
+        "sandrokeil/interop-config": "^2.1",
+        "sentry/sentry-laravel": "^2.7",
+        "stripe/stripe-php": "^7.115",
+        "symfony/property-access": "^5.0",
+        "symfony/serializer": "^5.0",
+        "tymon/jwt-auth": "1.0.*",
+        "vlucas/phpdotenv": "^3.3",
+        "webmozart/assert": "^1.11"
+    },
+    "require-dev": {
+        "allmyhomes/contract-mock": "^1.3",
+        "allmyhomes/contract-utils": "^2.2",
+        "allmyhomes/laravel-access-token-faker": "^1.2",
+        "allmyhomes/laravel-contract-tester": "^2.0",
+        "allmyhomes/php-jira-conventional-changelog": "^2.0",
+        "barryvdh/laravel-ide-helper": "^2.6",
+        "codedungeon/phpunit-result-printer": "^0.31",
+        "filp/whoops": "^2.0",
+        "flow/jsonpath": "~0.5",
+        "friendsofphp/php-cs-fixer": "^3.1",
+        "fzaninotto/faker": "^1.9",
+        "mockery/mockery": "^1.0",
+        "nunomaduro/collision": "^3.0",
+        "phploc/phploc": "^7.0",
+        "phpspec/prophecy-phpunit": "^2.0",
+        "phpstan/phpstan": "^1.0.0",
+        "phpstan/phpstan-mockery": "~1.0.0",
+        "phpstan/phpstan-phpunit": "^1.0.0",
+        "phpunit/phpcov": "~8.0",
+        "phpunit/phpunit": "~9.0",
+        "roave/security-advisories": "dev-latest",
+        "symfony/expression-language": "^3.3"
+    },
+    "autoload": {
+        "classmap": [
+            "database"
+        ],
+        "psr-4": {
+            "Allmyhomes\\": "src/",
+            "Allmyhomes\\Infrastructure\\Payment-gateway-service\\Laravel\\App\\": "src/Infrastructure/Boilerplate/Laravel/app/",
+            "Allmyhomes\\TokenVerification\\": "vendor/allmyhomes/laravel-token-verification/src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "post-create-project-cmd": [
+            "php artisan key:generate",
+            "php artisan jwt:secret -f"
+        ],
+        "post-install-cmd": [
+            "php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
+            "Illuminate\\Foundation\\ComposerScripts::postInstall",
+            "php artisan package:discover",
+            "chmod -R 777 ./src/Infrastructure/Boilerplate/Laravel/bootstrap/cache",
+            "chmod -R 777 ./src/Infrastructure/Boilerplate/Laravel/storage",
+            "chmod -R 777 ./scripts"
+        ],
+        "post-update-cmd": [
+            "Illuminate\\Foundation\\ComposerScripts::postUpdate",
+            "php artisan package:discover"
+        ],
+        "contract-convert": [
+            "docker run --rm -v $(pwd)/Contracts/Providing/:/mount/ contract-utils-converter /bin/sh -c \"convert api-unparsed.yaml\""
+        ],
+        "contract-convert-setup": [
+            "docker build -t contract-utils-converter vendor/allmyhomes/contract-utils/docker"
+        ],
+        "cs-check": [
+            "./vendor/bin/php-cs-fixer fix --dry-run --diff -v"
+        ],
+        "cs-fix": [
+            "./vendor/bin/php-cs-fixer fix"
+        ],
+        "dredd": [
+            "php artisan api:contract:test:start --env=testing"
+        ],
+        "phpstan:analyse": [
+            "php -d memory_limit=512M vendor/bin/phpstan.phar analyse --no-interaction"
+        ],
+        "test": [
+            "composer phpunit"
+        ],
+        "test:unit": [
+            "composer phpunit:unit"
+        ],
+        "test:unit:coverage": [
+            "composer phpunit:unit:coverage"
+        ],
+        "test:functional": [
+            "composer phpunit:functional"
+        ],
+        "test:functional:coverage": [
+            "composer phpunit:functional:coverage"
+        ],
+        "test:integration": [
+            "composer phpunit:integration"
+        ],
+        "test:integration:coverage": [
+            "composer phpunit:integration:coverage"
+        ],
+        "test:api": [
+            "composer phpunit:api"
+        ],
+        "test:api:coverage": [
+            "composer phpunit:api:coverage"
+        ],
+        "phpunit": [
+            "./vendor/bin/phpunit --testdox"
+        ],
+        "phpunit:unit": [
+            "./vendor/bin/phpunit --testsuite unit --testdox"
+        ],
+        "phpunit:unit:coverage": [
+            "./vendor/bin/phpunit --testsuite unit --coverage-php ./tests/_output/coverage/unit.cov --testdox"
+        ],
+        "phpunit:functional": [
+            "./vendor/bin/phpunit --testsuite functional --testdox"
+        ],
+        "phpunit:functional:coverage": [
+            "./vendor/bin/phpunit --testsuite functional --coverage-php ./tests/_output/coverage/functional.cov --testdox"
+        ],
+        "phpunit:integration": [
+            "./vendor/bin/phpunit --testsuite integration --testdox"
+        ],
+        "phpunit:integration:coverage": [
+            "./vendor/bin/phpunit --testsuite integration --coverage-php ./tests/_output/coverage/integration.cov --testdox"
+        ],
+        "phpunit:api": [
+            "./vendor/bin/phpunit --testsuite api --testdox"
+        ],
+        "phpunit:api:coverage": [
+            "./vendor/bin/phpunit --testsuite api --coverage-php ./tests/_output/coverage/api.cov --testdox"
+        ],
+        "phpunit:coverage-report": [
+            "./vendor/bin/phpcov merge --html=./tests/_output/coverage/html ./tests/_output/coverage/"
+        ],
+        "changelog": "conventional-changelog",
+        "release": "conventional-changelog --commit",
+        "release:patch": "conventional-changelog --patch --commit",
+        "release:minor": "conventional-changelog --minor --commit",
+        "release:major": "conventional-changelog --major --commit"
+    },
+    "config": {
+        "preferred-install": "dist",
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

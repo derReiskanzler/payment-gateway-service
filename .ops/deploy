@@ -1,0 +1,43 @@
+#!/bin/bash
+set -e -E -u
+
+if [ "$#" -eq 2 ]; then
+    STAGE=${1}
+    TAG=${2}
+    echo "$TAG -> $STAGE"
+    case "$STAGE" in
+        live)
+            export SERVICE_ACCOUNT_KEY=$LIVE_SERVICE_ACCOUNT_KEY
+            export CLUSTER_PROJECT_ID=$LIVE_CLUSTER_PROJECT_ID
+            export CLUSTER_NAME=$LIVE_CLUSTER_NAME
+            ;;
+        staging)
+            export SERVICE_ACCOUNT_KEY=$STAGING_SERVICE_ACCOUNT_KEY
+            export CLUSTER_PROJECT_ID=$STAGING_CLUSTER_PROJECT_ID
+            export CLUSTER_NAME=$STAGING_CLUSTER_NAME
+            ;;
+        develop)
+            export SERVICE_ACCOUNT_KEY=$DEVELOP_SERVICE_ACCOUNT_KEY
+            export CLUSTER_PROJECT_ID=$DEVELOP_CLUSTER_PROJECT_ID
+            export CLUSTER_NAME=$DEVELOP_CLUSTER_NAME
+            ;;
+        *)
+            echo "$SERVICE no valid service"
+            exit 1
+            ;;
+    esac
+
+    DEPLOYMENT_NAME=$APP
+    CONTAINER_NAME=$APP
+
+    echo "$SERVICE_ACCOUNT_KEY" > "$CI_PROJECT_DIR/key.json"
+    gcloud auth activate-service-account --key-file="$CI_PROJECT_DIR/key.json"
+    gcloud config set project $CLUSTER_PROJECT_ID
+    gcloud config set container/cluster $CLUSTER_NAME
+    gcloud config set compute/zone europe-west3-a
+    gcloud container clusters get-credentials $CLUSTER_NAME --zone europe-west3-a
+    kubectl set image deployment/$DEPLOYMENT_NAME $CONTAINER_NAME=eu.gcr.io/amh-infrastructure/$IMAGE_NAME:$TAG --record=true
+    kubectl rollout status deployment/$DEPLOYMENT_NAME
+else
+    echo "error"
+fi

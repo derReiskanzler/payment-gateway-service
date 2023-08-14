@@ -1,0 +1,44 @@
+asyncapi: 2.0.0
+info:
+  title: Keycloak Adapter Service
+  version: v1.1.6
+  description: |
+    Microservice which is responsible for new prospects and is a layer between keycloak and event-store
+
+defaultContentType: application/json
+
+channels:
+  keycloak_adapter-prospects-stream:
+    description: The stream for all relevant events regarding Users.
+    subscribe:
+      summary: Receive information about Prospects
+      message:
+        oneOf:
+          - $ref: '#/components/messages/ProspectProfileDeleted'
+
+components:
+  messages:
+    ProspectProfileDeleted:
+      name: User.ProspectProfileDeleted
+      title: Prospect Profile Deleted
+      summary: Prosspect Profile Deleted
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/UserProfilePayload"
+
+  schemas:
+    UserProfilePayload:
+      type: object
+      required:
+        - id
+        - occurred_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        occurred_at:
+          type: string
+          format: Y-m-d\TH:i:s.u
+      example:
+        id: 8ea116ef-7b69-43ff-ada6-43d2578b6f6c
+        occurred_at: 2020-02-26T19:28:25.000000

@@ -1,0 +1,43 @@
+services:
+  - name: payment-gateway-service
+    namespace: api
+    labels: ['backend']
+    dependencies: ['postgres-main', 'core']
+    live_reload: True
+    buttons: ['run_cmd']
+    syncback:
+      root: /var/www/html/
+      paths: ['Contracts','database', 'src', 'tests', 'composer.lock', 'composer.json', 'vendors', 'vendor']
+    xdebug: False
+#  - name: user
+#    namespace: api
+#    labels: ['backend']
+#    dependencies: ['mysql-main', 'core']
+#    buttons: ['run_cmd']
+#  - name: auth
+#    namespace: api
+#    labels: ['backend']
+#    dependencies: ['mysql-main', 'core']
+#    buttons: ['run_cmd']
+#  - name: mail-renderer
+#    namespace: api
+#    labels: ['backend']
+#    dependencies: ['mysql-main', 'core']
+#    buttons: ['run_cmd']
+  - name: postgres-main
+    namespace: api
+    labels: ['database']
+    dependencies: ['core']
+#  - name: mysql-main
+#    namespace: api
+#    labels: ['database']
+#    dependencies: ['core']
+#    arm64_image:
+#      helm_fields: ['mysql.image', 'mysql.imageTag']
+#      name: liupeng0518/mysql
+#      tag: 5.7-arm64
+  - name: core
+    labels: ['core']
+    set_value_from_file: ['gcrSecret=~/.docker/amh-gcr-key']
+  - name: shared-secrets
+    namespace: default

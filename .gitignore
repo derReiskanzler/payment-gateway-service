@@ -1,0 +1,48 @@
+# Laravel defaults
+/node_modules
+/public/hot
+/public/storage
+/src/Infrastructure/Boilerplate/Laravel/storage
+!/src/Infrastructure/Boilerplate/Laravel/storage/*.key
+/vendor
+/.idea
+/.vscode
+/.vagrant
+Homestead.json
+Homestead.yaml
+npm-debug.log
+yarn-error.log
+.env
+
+# PHPUnit
+.phpunit.result.cache
+
+# PHP_CodeSniffer
+.phpcs.result.cache
+.php-cs-fixer.cache
+
+# Allows a developer to use a custom configuration
+.phpcs.xml
+.php-cs-fixer.php
+phpstan.neon
+phpunit.xml
+
+### AllMyHomes environment ###
+##############################
+/.bashrc
+/.ops/data/*
+/coverage
+.DS_Store
+
+### Don't track generated test helper ###
+#########################################
+/tests/_support/_generated
+/tests/_output/*
+
+### Don't track generated parsed api contract ###
+#########################################################
+Contracts/Providing/transformed.yaml
+
+### Don't track generated dredd report ###
+#########################################
+dredd-report.html

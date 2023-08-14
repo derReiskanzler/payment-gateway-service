@@ -1,0 +1,6 @@
+<?php
+
+return [
+    'skipTag' => true,
+    'packageBump' => false,
+];

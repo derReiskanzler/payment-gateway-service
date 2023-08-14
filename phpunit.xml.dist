@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" colors="true" stopOnFailure="false" convertErrorsToExceptions="true" convertNoticesToExceptions="true" convertWarningsToExceptions="true" backupGlobals="false" backupStaticAttributes="false" failOnRisky="true" failOnWarning="true" beStrictAboutChangesToGlobalState="true" beStrictAboutOutputDuringTests="true" beStrictAboutResourceUsageDuringSmallTests="true" bootstrap="./tests/PHPUnit/bootstrap.php" executionOrder="random" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
+  <coverage disableCodeCoverageIgnore="true" processUncoveredFiles="true">
+    <include>
+      <directory suffix=".php">./src</directory>
+    </include>
+    <exclude>
+      <directory suffix=".php">./src/Infrastructure/Boilerplate/Laravel/bootstrap</directory>
+      <directory suffix=".php">./src/Infrastructure/Boilerplate/Laravel/config</directory>
+      <directory suffix=".php">./src/Infrastructure/Boilerplate/Laravel/routes</directory>
+      <directory suffix=".php">./src/Infrastructure/Boilerplate/Laravel/storage</directory>
+      <directory suffix=".php">./src/Infrastructure/Boilerplate/Laravel/resources</directory>
+      <directory suffix=".php">./src/Infrastructure/Inbound/Api/Route</directory>
+    </exclude>
+  </coverage>
+  <testsuites>
+    <testsuite name="unit">
+      <directory>./tests/PHPUnit/Unit</directory>
+    </testsuite>
+    <testsuite name="functional">
+      <directory>./tests/PHPUnit/Functional</directory>
+    </testsuite>
+    <testsuite name="integration">
+      <directory>./tests/PHPUnit/Integration</directory>
+    </testsuite>
+    <testsuite name="api">
+      <directory>./tests/PHPUnit/Api</directory>
+    </testsuite>
+  </testsuites>
+  <listeners>
+    <listener class="Tests\PHPUnit\SuiteListener"/>
+  </listeners>
+  <php>
+    <env name="APP_ENV" value="testing"/>
+    <env name="DB_CONNECTION" value="pgsql_testing"/>
+    <env name="CACHE_DRIVER" value="array"/>
+    <env name="SESSION_DRIVER" value="array"/>
+    <env name="QUEUE_DRIVER" value="sync"/>
+    <env name="MAIL_DRIVER" value="log"/>
+  </php>
+</phpunit>

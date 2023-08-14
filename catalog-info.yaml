@@ -1,0 +1,37 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: laravel-api-boilerplate
+  description: Laravel 6.x boilerplate optimized for building a microservice API following the Domain Driven Design Pattern.
+  tags:
+    - php
+    - laravel
+  links:
+    - title: Develop
+      url: https://api.develop.envs.io/<service_name>
+    - title: Staging
+      url: https://api.staging.envs.io/<service_name>
+    - title: Live
+      url: https://api.allmyhomes.com/<service_name>
+  annotations:
+    gitlab.com/project-id: '339'
+    sentry.io/project-slug: boilerplate # It represents project name in sentry
+    backstage.io/kubernetes-id: boilerplate
+spec:
+  type: service
+  owner: sre-team
+  lifecycle: production
+  providesApis:
+    - laravel-api-boilerplate-example-api
+---
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: laravel-api-boilerplate-example-api
+  description: Laravel Boilerplate Example API
+spec:
+  type: openapi
+  lifecycle: production
+  owner: team-sre
+  definition:
+    $text: https://gitlab.smartexpose.com/allmyhomes/laravel-api-boilerplate/-/blob/master/Contracts/Providing/api-unparsed.yaml

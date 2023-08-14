@@ -1,0 +1,156 @@
+asyncapi: 2.0.0
+info:
+  title: Project Information Service
+  version: v3.37.0
+  description: |
+    Microservice which is responsible for all project and unit related information.
+    Containing resources for the CMS-Frontend and expose resources for internal services.
+
+defaultContentType: application/json
+
+channels:
+  project_information-sellable_project_unit_contents-stream:
+    description: The stream for all relevant events about sellable projects unit contents
+    subscribe:
+      summary: Receive information about platform projects unit content events
+      message:
+        $ref: '#/components/messages/PlatformUnitContentUpdated'
+
+components:
+  messages:
+    PlatformUnitContentUpdated:
+      name: ProjectInformation.PlatformUnitContentUpdated
+      title: Platform Unit Content Updated
+      summary: Sellable Project Unit Content updated
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/SellableProjectUnitContentPayload"
+
+  schemas:
+    DateTimeMicro:
+      type: string
+      format: ISO 8601
+      example: "2020-06-27T21:37:45.531877"
+    SellableProjectUnitContentPayload:
+      type: object
+      required:
+        - id
+        - unit_id
+        - project_id
+        - language_code
+      additionalProperties: false
+      properties:
+        id:
+          type: integer
+          format: int10
+        unit_id:
+          type: integer
+          format: int10
+        project_id:
+          type: integer
+          format: int10
+        language_code:
+          type: string
+          format: BCP 47
+          example: "de-DE"
+        area_unit:
+          type: string
+          description: "https://de.wikipedia.org/wiki/Internationales_Einheitensystem"
+          example: "m²"
+        name:
+          type: string
+          example: "WE 01"
+        building:
+          type: ["integer", "null"]
+          format: int10
+          example: 343453
+        floor:
+          type: ["string", "null"]
+          example: "1.0 EG"
+        rooms:
+          type: number
+          format: float
+          example: 2.5
+        bedrooms:
+          type: ["number", "null"]
+          format: float
+          example: 4.5
+        size:
+          type: object
+          additionalProperties: false
+          properties:
+            value:
+              type: number
+              format: float
+              example: 40.55
+            measure:
+              type: string
+              description: "https://de.wikipedia.org/wiki/Internationales_Einheitensystem"
+              example: "m²"
+        price_per_area_unit:
+          type: ["object", "null"]
+          additionalProperties: false
+          properties:
+            value:
+              type: number
+              format: float
+              example: 65.88
+            currency:
+              type: string
+              description: "ISO 4217"
+              example: "EUR"
+        price:
+          type: object
+          additionalProperties: false
+          properties:
+            value:
+              type: number
+              format: float
+              example: 65.88
+            currency:
+              type: string
+              description: "ISO 4217"
+              example: "EUR"
+        unit_type:
+          type: string
+          enum:
+            - GARDEN_APARTMENT
+            - APARTMENT
+            - FIRST_FLOOR_APARTMENT
+            - BASEMENT_APARTMENT
+            - PENTHOUSE
+            - LOFT
+            - ROOFTOP_APARTMENT
+            - DUPLEX
+            - MICRO_APARTMENT
+            - VILLA_HOUSE
+            - NOT_SET
+          example: "DUPLEX"
+        allowed_to_show_price_to_prospect_on_landing_page:
+          type: boolean
+          example: true
+        documents:
+          type: array
+          items:
+            type: object
+            additionalProperties: false
+            required:
+              - id
+              - type
+              - url_path
+            properties:
+              id:
+                type: integer
+                format: int10
+                example: 65489
+              type:
+                type: string
+                enum:
+                  - FLOOR_PLAN
+                example: "FLOOR_PLAN"
+              url_path:
+                type: string
+                description: "FQURL"
+                example: "https:/path/to/document"
+        occurred_at:
+          $ref: "#/components/schemas/DateTimeMicro"

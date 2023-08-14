@@ -1,0 +1,64 @@
+version: '2'
+services:
+    boilerplate-app:
+        build:
+            context: .
+            dockerfile: .ops/docker/Dockerfile
+        container_name: boilerplate-app
+        restart: always
+        ports:
+            - 80:80
+        volumes:
+            - .:/var/www/html
+            - ~/.ssh:/root/.ssh
+            - ~/.gitconfig:/root/.gitconfig
+            - ~/.composer/:/root/.composer/
+        environment:
+            - DB_HOST=be-boilerplate-db
+            - DB_PORT=5432
+            - DB_DATABASE=boilerplate
+            - DB_USERNAME=root
+            - DB_PASSWORD=password
+            - DB_EVENT_STORE_HOST=event-store
+            - DB_EVENT_STORE_PORT=5432
+            - DB_EVENT_STORE_DATABASE=event-store
+            - DB_EVENT_STORE_USERNAME=root
+            - DB_EVENT_STORE_PASSWORD=password
+            - BLACKFIRE_CLIENT_ID=2ce4ed31-0b76-4e9a-a4b1-47e4e122581e
+            - BLACKFIRE_CLIENT_TOKEN=4c5b028abd54d7da11018589d216a80261d28a2b6655b95854620ada34e7f2d9
+
+    boilerplate-db:
+        image: postgres:11-alpine
+        container_name: be-boilerplate-db
+        restart: always
+        ports:
+            - 5432:5432
+        volumes:
+            - .ops/data/boilerplate-db/postgresql:/var/lib/postgresql/data
+        environment:
+            - POSTGRES_USER=root
+            - POSTGRES_PASSWORD=password
+            - POSTGRES_DB=boilerplate
+
+    event-store-db:
+        image: postgres:11-alpine
+        container_name: event-store
+        restart: always
+        ports:
+            - 5433:5432
+        volumes:
+            - .ops/data/event-store-db/postgresql:/var/lib/postgresql/data
+        environment:
+            - POSTGRES_USER=root
+            - POSTGRES_PASSWORD=password
+            - POSTGRES_DB=event-store
+
+    blackfire:
+        image: blackfire/blackfire
+        ports:
+            - 8707
+        environment:
+            - BLACKFIRE_CLIENT_ID=2ce4ed31-0b76-4e9a-a4b1-47e4e122581e
+            - BLACKFIRE_CLIENT_TOKEN=4c5b028abd54d7da11018589d216a80261d28a2b6655b95854620ada34e7f2d9
+            - BLACKFIRE_SERVER_ID=b16a2608-8adf-432e-83ac-5a44921d8076
+            - BLACKFIRE_SERVER_TOKEN=c789e8d6a10716d87dd6355d9cfbba30b4bcef922dd31930da6265bcc47806a5

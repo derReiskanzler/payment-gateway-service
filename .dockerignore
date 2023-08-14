@@ -1,0 +1,4 @@
+.git
+.ops/data/*
+vendor
+src/Infrastructure/Boilerplate/Laravel/bootstrap/cache/*

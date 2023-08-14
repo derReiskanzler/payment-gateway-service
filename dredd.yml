@@ -1,0 +1,29 @@
+dry-run: null
+hookfiles: ['./vendor/allmyhomes/laravel-contract-tester/src/DreddHook.php']
+language: 'vendor/bin/dredd-hooks-php'
+require: null
+server: 'php -S 0.0.0.0:3000 server.php'
+server-wait: 3
+init: false
+custom: {}
+names: false
+reporter: html
+output: './dredd-report.html'
+header: []
+sorted: false
+user: null
+inline-errors: true
+details: true
+method: []
+color: true
+loglevel: error
+path: []
+hooks-worker-timeout: 120000
+hooks-worker-connect-timeout: 120000
+hooks-worker-term-timeout: 120000
+hooks-worker-after-connect-wait: 1000
+hooks-worker-connect-retry: 1500
+
+config: ./dredd.yml
+blueprint: './Contracts/Providing/api.yaml'
+endpoint: 'http://127.0.0.1:3000'

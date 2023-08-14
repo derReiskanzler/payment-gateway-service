@@ -1,0 +1,102 @@
+asyncapi: 2.0.0
+info:
+  title: Reservation Management Service
+  version: v0.0.1
+  description: |
+    A CQRS/ES microservice which provides an API for managing the unit reservation process at Allmyhomes.
+    The API is consumed by Agents via myAssistant FE who reserve one or more units on behalf of a prospect, and Sales Coordinator via AMP FE who reserves, buys or cancels the purchase of the unit(s) on behalf of the prospect.
+
+defaultContentType: application/json
+
+channels:
+  reservation_management-reservation-stream:
+    description: A stream which publishes all core Reservation events.
+    subscribe:
+      summary: Receive information about the reservation of a unit or an update of the status of the reservation process.
+      message:
+        oneOf:
+          - $ref: '#/components/messages/AgentInitiatedReservation'
+
+components:
+  messages:
+    AgentInitiatedReservation:
+      name: "ReservationManagement.AgentInitiatedReservation"
+      title: Agent Initiated Reservaton
+      summary: The agent on behalf of a prospect initiates reservation for selected units
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/AgentInitiatedReservationPayload"
+
+  schemas:
+    AgentInitiatedReservationPayload:
+      type: object
+      required:
+        - id
+        - agent_id
+        - prospect_id
+        - project_id
+        - units
+        - total_deposit
+        - deposit_transfer_deadline
+        - total_unit_price
+        - status
+        - language
+        - occurred_at
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          pattern: '^(\d{4})-(\d{4})-(\d{5})$'
+        agent_id:
+          type: string
+          format: uuid
+        prospect_id:
+          type: string
+          format: uuid
+        project_id:
+          type: integer
+          format: int10
+        units:
+          type: array
+          items:
+            type: object
+            required:
+              - id
+              - price
+              - deposit
+            properties:
+              id:
+                type: integer
+                format: int10
+              price:
+                type: object
+                required:
+                  - value
+                  - currency
+                properties:
+                  value:
+                    type: ["number", "null"]
+                    format: float
+                  currency:
+                    type: ["string", "null"]
+                    description: "ISO 4217"
+                    example: "EUR"
+              deposit:
+                type: ["number", "null"]
+                format: float
+        total_deposit:
+          type: number
+          format: float
+        deposit_transfer_deadline:
+          type: string
+          format: date-time
+        total_unit_price:
+          type: number
+          format: float
+        language:
+          type: string
+          example: "en"
+        occurred_at:
+          type: string
+          format: date-time
+          example: "2022-03-14T21:37:45.531877"

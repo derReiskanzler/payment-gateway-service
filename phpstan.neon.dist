@@ -1,0 +1,35 @@
+parameters:
+  excludePaths:
+    - *.blade.php
+    - src/Infrastructure/Boilerplate/Laravel/routes/
+    - src/Infrastructure/Boilerplate/Laravel/storage/
+    - src/Infrastructure/Inbound/Api/Route/
+  level: 8
+  checkMissingIterableValueType: true
+  checkGenericClassInNonGenericObjectType: false
+  reportUnmatchedIgnoredErrors: false
+  paths:
+    - src/
+    - tests/PHPUnit
+  ignoreErrors:
+    - '#Call to an undefined method Illuminate\\Database\\ConnectionInterface::getPdo\(\).#'
+    - '#Parameter \#2 ...\$events of method EventEngine\\EventStore\\EventStore::appendTo\(\) expects EventEngine\\Messaging\\GenericEvent, EventEngine\\Messaging\\Message given.#'
+    - '#Property Allmyhomes\\Infrastructure\\Boilerplate\\Helpers\\EventSourcing\\Aggregate\\AggregateTypeMap::\$[a-zA-Z]+ is never written, only read.#'
+    - '#Offset .* on left side of .* always exists and is not nullable\.#'
+    -
+       message: '#Property .+\\Event\\[a-zA-Z]+::\$[a-zA-Z]+ is never written, only read.#'
+       path: %currentWorkingDirectory%/src/Domain/*
+    -
+       message: '#Property .+\\Aggregate\\[a-zA-Z]+::\$[a-zA-Z]+ is never written, only read.#'
+       path: %currentWorkingDirectory%/src/Domain/*
+    - '#Attribute class JetBrains\\PhpStorm\\.+ does not exist.#'
+    - '#Method \S+ should return array<[^\s]+, EventEngine\\Messaging\\GenericEvent\> but returns array\<[^\s]+, EventEngine\\Messaging\\Message\>\.#'
+    -
+      message: '#Method Allmyhomes\\Infrastructure\\Boilerplate\\Helpers\\EventEngine\\EventTranslator::translateFromDomainToGeneric\(\) should return EventEngine\\Messaging\\GenericEvent but returns EventEngine\\Messaging\\Message\.#'
+      path: %currentWorkingDirectory%/src/Infrastructure/Boilerplate/Helpers/EventEngine/EventTranslator.php
+    -
+      message: '#Parameter \#1 \$json of function json_decode expects string, string\|false given\.#'
+      path: %currentWorkingDirectory%/tests/*
+includes:
+  - 'vendor/phpstan/phpstan-mockery/extension.neon'
+  - 'vendor/phpstan/phpstan-phpunit/extension.neon'
